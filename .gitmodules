@@ -1,0 +1,12 @@
+[submodule "src/thirdparty/vtflib"]
+	path = src/thirdparty/vtflib
+	url = https://github.com/StrataSource/VTFLib
+[submodule "src/thirdparty/sapp"]
+	path = src/thirdparty/sapp
+	url = https://github.com/Trico-Everfire/SteamAppPathProvider
+[submodule "src/thirdparty/speedykeyv"]
+	path = src/thirdparty/speedykeyv
+	url = https://github.com/ozxybox/SpeedyKeyV
+[submodule "src/thirdparty/studiomodelpp"]
+	path = src/thirdparty/studiomodelpp
+	url = https://github.com/craftablescience/studiomodelpp

@@ -1,0 +1,11 @@
+# IDEs
+.idea/
+.vs/
+.vscode/
+
+# Project exclude paths
+cmake-build-*/
+
+# Generated
+res/installer/deb/puzzlemaker_ce.desktop
+src/config/Config.h
