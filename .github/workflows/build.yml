@@ -50,16 +50,16 @@ jobs:
 
       - name: Build
         working-directory: ${{env.BUILD_DIR}}
-        run: cmake --build . --config ${{matrix.build_type}} -t vpkedit -- -j%NUMBER_OF_PROCESSORS%
+        run: cmake --build . --config ${{matrix.build_type}} -t puzzlemaker_ce -- -j%NUMBER_OF_PROCESSORS%
 
       - name: Upload Standalone
         uses: actions/upload-artifact@v3
         with:
-          name: VPKEdit-Windows-Standalone-msvc-${{matrix.build_type}}
+          name: Puzzlemaker_CE-Windows-Standalone-msvc-${{matrix.build_type}}
           path: |
             ${{env.BUILD_DIR}}/CREDITS.md
             ${{env.BUILD_DIR}}/LICENSE
-            ${{env.BUILD_DIR}}/vpkedit.exe
+            ${{env.BUILD_DIR}}/puzzlemaker_ce.exe
             ${{env.BUILD_DIR}}/*.dll
             ${{env.BUILD_DIR}}/imageformats/*.dll
             ${{env.BUILD_DIR}}/platforms/*.dll
@@ -74,9 +74,9 @@ jobs:
       - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
-          name: VPKEdit-Windows-Installer-msvc-${{matrix.build_type}}
+          name: Puzzlemaker_CE-Windows-Installer-msvc-${{matrix.build_type}}
           path: |
-            ${{env.BUILD_DIR}}/VPKEdit-*-win64.exe
+            ${{env.BUILD_DIR}}/Puzzlemaker_CE-*-win64.exe
           retention-days: 7
 
 
@@ -126,11 +126,11 @@ jobs:
 
       - name: Build
         working-directory: ${{env.BUILD_DIR}}
-        run: cmake --build . --config ${{matrix.build_type}} -t vpkedit -- -j$(nproc)
+        run: cmake --build . --config ${{matrix.build_type}} -t puzzlemaker_ce -- -j$(nproc)
 
       - name: Fixup Binaries
         run: |
-          chmod +x '${{env.BUILD_DIR}}/vpkedit'
+          chmod +x '${{env.BUILD_DIR}}/puzzlemaker_ce'
 
           # runpath cleanup for the Qt binaries. These are (mostly) wrong, leading to crashes
           for f in ${{env.BUILD_DIR}}/*.so*; do
@@ -145,11 +145,11 @@ jobs:
       - name: Upload Standalone
         uses: actions/upload-artifact@v3
         with:
-          name: VPKEdit-Linux-Standalone-${{matrix.compiler}}-${{matrix.build_type}}
+          name: Puzzlemaker_CE-Linux-Standalone-${{matrix.compiler}}-${{matrix.build_type}}
           path: |
             ${{env.BUILD_DIR}}/CREDITS.md
             ${{env.BUILD_DIR}}/LICENSE
-            ${{env.BUILD_DIR}}/vpkedit
+            ${{env.BUILD_DIR}}/puzzlemaker_ce
             ${{env.BUILD_DIR}}/*.so*
             ${{env.BUILD_DIR}}/egldeviceintegrations/*.so*
             ${{env.BUILD_DIR}}/imageformats/*.so*
@@ -170,7 +170,7 @@ jobs:
       - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
-          name: VPKEdit-Linux-Installer-${{matrix.compiler}}-${{matrix.build_type}}
+          name: Puzzlemaker_CE-Linux-Installer-${{matrix.compiler}}-${{matrix.build_type}}
           path: |
-            ${{env.BUILD_DIR}}/VPKEdit-*-Linux.deb
+            ${{env.BUILD_DIR}}/Puzzlemaker_CE-*-Linux.deb
           retention-days: 7
