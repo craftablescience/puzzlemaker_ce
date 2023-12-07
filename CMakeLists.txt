@@ -68,30 +68,29 @@ set(CMAKE_AUTORCC ON)
 
 # Config file
 configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Config.h.in"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Config.h"
-        @ONLY)
+        "${CMAKE_CURRENT_SOURCE_DIR}/installer/deb/desktop.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/installer/deb/${PROJECT_NAME}.desktop")
 configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/res/installer/deb/desktop.in"
-        "${CMAKE_CURRENT_SOURCE_DIR}/res/installer/deb/${PROJECT_NAME}.desktop")
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Config.h.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Config.h")
 
 # Add sources and create executable
 list(APPEND ${PROJECT_NAME}_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/res/res.qrc"
 
         "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Config.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Options.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Options.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Options.h"
 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/dialogs/NewUpdateDialog.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/dialogs/NewUpdateDialog.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/dialogs/NewUpdateDialog.h"
 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/formats/VTFDecoder.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/formats/VTFDecoder.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/formats/VTFDecoder.h"
 
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/Window.cpp")
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Window.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h")
 if(WIN32)
     list(APPEND ${PROJECT_NAME}_SOURCES
             "${CMAKE_CURRENT_SOURCE_DIR}/res/icon.rc")
@@ -197,7 +196,7 @@ install(TARGETS ${PROJECT_NAME} vtflib
 install(FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/CREDITS.md"
         "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE"
-        "src/res/installer/.nonportable"
+        "${CMAKE_CURRENT_SOURCE_DIR}/installer/.nonportable"
         DESTINATION .)
 if(WIN32)
     install(IMPORTED_RUNTIME_ARTIFACTS
@@ -264,9 +263,9 @@ elseif(UNIX)
                 LIBRARY DESTINATION .)
     endif()
 
-    install(FILES "src/res/installer/deb/${PROJECT_NAME}.desktop"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/installer/deb/${PROJECT_NAME}.desktop"
             DESTINATION "/usr/share/applications/")
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/branding/${PROJECT_NAME}.png"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/res/icon.png"
             DESTINATION "/usr/share/pixmaps/")
 endif()
 
@@ -287,7 +286,7 @@ if(VPKEDIT_BUILD_INSTALLER)
         set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
         set(CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME_PRETTY})
         set(CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME_PRETTY})
-        set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/res/icon.ico")
+        set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/res/icon.ico")
         set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
         set(CPACK_NSIS_URL_INFO_ABOUT "${CMAKE_PROJECT_HOMEPAGE_URL}")
         set(CPACK_NSIS_MANIFEST_DPI_AWARE ON)
