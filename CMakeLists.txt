@@ -13,6 +13,7 @@ include(GNUInstallDirs)
 
 # Options
 option(PUZZLEMAKER_CE_BUILD_INSTALLER "Build installer for ${PROJECT_NAME_PRETTY}" ON)
+option(PUZZLEMAKER_CE_BUILD_EDITOR_TESTS "Build editor backend tests for ${PROJECT_NAME_PRETTY}" OFF)
 
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
@@ -84,6 +85,9 @@ list(APPEND ${PROJECT_NAME}_SOURCES
 
         "${CMAKE_CURRENT_SOURCE_DIR}/src/dialogs/NewUpdateDialog.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/dialogs/NewUpdateDialog.h"
+
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/Octree.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/Vector.h"
 
         "${CMAKE_CURRENT_SOURCE_DIR}/src/formats/VTFDecoder.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/formats/VTFDecoder.h"
@@ -311,4 +315,24 @@ if(PUZZLEMAKER_CE_BUILD_INSTALLER)
         set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/${PROJECT_NAME}")
     endif()
     include(CPack)
+endif()
+
+if(PUZZLEMAKER_CE_BUILD_TESTS)
+    include(FetchContent)
+    FetchContent_Declare(
+            googletest
+            GIT_REPOSITORY https://github.com/google/googletest.git
+            GIT_TAG v1.14.0)
+    FetchContent_MakeAvailable(googletest)
+    enable_testing()
+
+    add_executable(${PROJECT_NAME}_test
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/Octree.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/Vector.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/test/Octree.cpp")
+    target_include_directories(${PROJECT_NAME}_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/editor")
+    target_link_libraries(${PROJECT_NAME}_test PUBLIC gtest_main)
+
+    include(GoogleTest)
+    gtest_discover_tests(${PROJECT_NAME}_test)
 endif()
