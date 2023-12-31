@@ -9,7 +9,7 @@ on:
 
 env:
   BUILD_DIR: ${{github.workspace}}/build
-  QT_VERSION: '6.5.2'
+  QT_VERSION: '6.6.1'
   QT_MODULES: 'qtimageformats'
 
 jobs:
@@ -76,7 +76,7 @@ jobs:
         with:
           name: Puzzlemaker_CE-Windows-Installer-msvc-${{matrix.build_type}}
           path: |
-            ${{env.BUILD_DIR}}/Puzzlemaker_CE-*-win64.exe
+            ${{env.BUILD_DIR}}/Puzzlemaker CE-*-win64.exe
           retention-days: 7
 
 
@@ -172,5 +172,5 @@ jobs:
         with:
           name: Puzzlemaker_CE-Linux-Installer-${{matrix.compiler}}-${{matrix.build_type}}
           path: |
-            ${{env.BUILD_DIR}}/Puzzlemaker_CE-*-Linux.deb
+            ${{env.BUILD_DIR}}/Puzzlemaker CE-*-Linux.deb
           retention-days: 7
