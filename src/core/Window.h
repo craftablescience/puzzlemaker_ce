@@ -7,8 +7,6 @@
 
 class QAction;
 class QCloseEvent;
-class QNetworkAccessManager;
-class QNetworkReply;
 
 class Window : public QMainWindow {
     Q_OBJECT;
@@ -25,8 +23,6 @@ public:
     bool saveFileAs();
 
     void closeFile();
-
-    void checkForUpdates() const;
 
     void about();
 
@@ -48,11 +44,7 @@ private:
     QAction* saveFileAsAction;
     QAction* closeFileAction;
 
-    QNetworkAccessManager* checkForUpdatesNetworkManager;
-
     bool modified;
-
-    void checkForUpdatesReply(QNetworkReply* reply);
 
     void freezeActions(bool freeze, bool freezeCreationActions = true) const;
 

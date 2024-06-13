@@ -14,17 +14,11 @@
 #include <QJsonObject>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QNetworkReply>
 #include <QStyle>
 #include <QStyleFactory>
 
-#include <sapp/FilesystemSearchProvider.h>
-
-#include "config/Config.h"
-#include "config/Options.h"
-#include "dialogs/NewUpdateDialog.h"
-
-constexpr auto SAVE_FILTER = PUZZLEMAKER_CE_PROJECT_CHAMBER_SAVE_NAME " (*" PUZZLEMAKER_CE_PROJECT_CHAMBER_SAVE_EXTENSION ");;All files (*.*)";
+#include "../config/Config.h"
+#include "../config/Options.h"
 
 Window::Window(QWidget* parent)
         : QMainWindow(parent)
@@ -57,11 +51,6 @@ Window::Window(QWidget* parent)
     this->closeFileAction->setDisabled(true);
 
     fileMenu->addSeparator();
-    this->checkForUpdatesNetworkManager = new QNetworkAccessManager(this);
-    QObject::connect(this->checkForUpdatesNetworkManager, &QNetworkAccessManager::finished, this, &Window::checkForUpdatesReply);
-    fileMenu->addAction(this->style()->standardIcon(QStyle::SP_ComputerIcon), tr("Check For &Updates..."), Qt::CTRL | Qt::Key_U, [this] {
-        this->checkForUpdates();
-    });
     fileMenu->addAction(this->style()->standardIcon(QStyle::SP_DialogCancelButton), tr("&Exit"), Qt::ALT | Qt::Key_F4, [this] {
         this->close();
     });
@@ -100,14 +89,6 @@ Window::Window(QWidget* parent)
         this->aboutQt();
     });
 
-#ifdef QT_DEBUG
-    // Debug menu
-    auto* debugMenu = this->menuBar()->addMenu("&Debug");
-    debugMenu->addAction("New Update Dialog", [this] {
-        NewUpdateDialog::getNewUpdatePrompt("https://example.com", "v1.2.3", this);
-    });
-#endif
-
     // Call after the menu is created, it controls the visibility of the save button
     this->markModified(false);
 
@@ -133,7 +114,7 @@ void Window::newFile(bool fromDirectory, const QString& startPath) {
 void Window::openFile(const QString& startPath, const QString& filePath) {
 	auto path = filePath;
 	if (path.isEmpty()) {
-		path = QFileDialog::getOpenFileName(this, tr("Open " PUZZLEMAKER_CE_PROJECT_CHAMBER_SAVE_NAME), startPath, SAVE_FILTER);
+		path = QFileDialog::getOpenFileName(this, tr("Open " PUZZLEMAKER_CE_PROJECT_CHAMBER_SAVE_NAME), startPath, PUZZLEMAKER_CE_PROJECT_CHAMBER_SAVE_NAME " (*" PUZZLEMAKER_CE_PROJECT_CHAMBER_SAVE_EXTENSION ");;All files (*.*)");
 	}
     if (path.isEmpty()) {
         return;
@@ -157,43 +138,6 @@ bool Window::saveFileAs() {
 
 void Window::closeFile() {
     this->clearContents();
-}
-
-void Window::checkForUpdates() const {
-    this->checkForUpdatesNetworkManager->get(QNetworkRequest(QUrl(PUZZLEMAKER_CE_PROJECT_HOMEPAGE_API "/releases")));
-}
-
-void Window::checkForUpdatesReply(QNetworkReply* reply) {
-    if (reply->error() != QNetworkReply::NoError) {
-        QMessageBox::critical(this, tr("Error"), tr("Error occurred checking for updates!"));
-        return;
-    }
-    const auto parseFailure = [this] {
-        QMessageBox::critical(this, tr("Error"), tr("Invalid JSON response was retrieved checking for updates!"));
-    };
-    QJsonDocument response = QJsonDocument::fromJson(QString(reply->readAll()).toUtf8());
-    if (!response.isArray()) {
-        return parseFailure();
-    }
-    QJsonArray releases = response.array();
-    if (releases.isEmpty() || !releases.at(0).isObject()) {
-        return parseFailure();
-    }
-    auto release = releases.at(0).toObject();
-    if (!release.contains("html_url") || !release["html_url"].isString()) {
-        return parseFailure();
-    }
-    auto url = release["html_url"].toString();
-    if (!release.contains("tag_name") || !release["tag_name"].isString()) {
-        return parseFailure();
-    }
-    auto version = release["tag_name"].toString();
-
-    if (version == QString("v" PUZZLEMAKER_CE_PROJECT_VERSION)) {
-        QMessageBox::information(this, tr("No New Updates"), tr("You are running the most recent version!"));
-        return;
-    }
-    NewUpdateDialog::getNewUpdatePrompt(url, version, this);
 }
 
 void Window::about() {

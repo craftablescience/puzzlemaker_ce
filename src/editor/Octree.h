@@ -121,25 +121,33 @@ public:
 		int halfSize_;
 	};
 
-	explicit Octree(std::uint8_t size)
-		: root(std::make_unique<Node>(Vec3i::zero(), size / 2)) {}
+	explicit Octree(int size)
+		: root_(std::make_unique<Node>(Vec3i::zero(), size / 2)) {}
 
 	/// Set voxel data in the octree
 	[[nodiscard]] bool set(Vec3i position, const D& data, bool forceMerge = false) {
-		return this->set(this->root, position, data);
+		return this->set(this->root_, position, data);
 	}
 
 	/// Get an existing voxel from the octree. Returns nullptr if the voxel doesn't exist
 	[[nodiscard]] std::unique_ptr<Node>& get(Vec3i position) {
-		return this->get(this->root, position);
+		return this->get(this->root_, position);
 	}
 
 	[[nodiscard]] bool exists(Vec3i position) const {
-		return this->exists(this->root, position);
+		return this->exists(this->root_, position);
 	}
 
 	void simplify() {
 		// todo
+	}
+
+	[[nodiscard]] std::unique_ptr<Node>& root() {
+		return this->root_;
+	}
+
+	[[nodiscard]] const std::unique_ptr<Node>& root() const {
+		return this->root_;
 	}
 
 private:
@@ -192,5 +200,5 @@ private:
 		return this->exists(child, position);
 	}
 
-	std::unique_ptr<Node> root;
+	std::unique_ptr<Node> root_;
 };

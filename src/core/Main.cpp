@@ -4,8 +4,8 @@
 #include <QSettings>
 #include <QSurfaceFormat>
 
-#include "config/Config.h"
-#include "config/Options.h"
+#include "../config/Config.h"
+#include "../config/Options.h"
 #include "Window.h"
 
 int main(int argc, char** argv) {
