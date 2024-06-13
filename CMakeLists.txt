@@ -113,3 +113,8 @@ endfunction()
 
 # puzzlemaker_ce
 include("${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt")
+
+# Add tests
+if(PUZZLEMAKER_CE_BUILD_TESTS)
+    include("${CMAKE_CURRENT_LIST_DIR}/test/CMakeLists.txt")
+endif()

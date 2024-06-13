@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <Octree.h>
+#include <editor/Octree.h>
 
 TEST(Octree, exists) {
 	Octree<int> octree(16);

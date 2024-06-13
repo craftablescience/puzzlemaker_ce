@@ -3,6 +3,7 @@
 #include <array>
 #include <memory>
 #include <variant>
+#include <utility>
 
 #include "Vector.h"
 
@@ -27,8 +28,8 @@ public:
 		}
 
 		/// Merge 8 subvoxels into one voxel
-		void merge(const D& data) {
-			this->data_ = data;
+		void merge(D data) {
+			this->data_ = std::move(data);
 			this->isLeaf = true;
 		}
 
