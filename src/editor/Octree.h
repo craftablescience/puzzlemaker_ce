@@ -5,7 +5,9 @@
 #include <variant>
 #include <utility>
 
-#include "Vector.h"
+#include <sourcepp/math/Vector.h>
+
+using namespace sourcepp::math;
 
 template<typename D>
 class Octree {
@@ -127,7 +129,7 @@ public:
 
 	/// Set voxel data in the octree
 	[[nodiscard]] bool set(Vec3i position, const D& data, bool forceMerge = false) {
-		return this->set(this->root_, position, data);
+		return this->set(this->root_, position, data, forceMerge);
 	}
 
 	/// Get an existing voxel from the octree. Returns nullptr if the voxel doesn't exist

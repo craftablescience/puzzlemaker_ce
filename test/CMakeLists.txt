@@ -11,7 +11,7 @@ list(APPEND ${PROJECT_NAME}_test_SOURCES
 
 add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_test_SOURCES})
 
-target_link_libraries(${PROJECT_NAME}_test PUBLIC gtest_main)
+target_link_libraries(${PROJECT_NAME}_test PUBLIC gtest_main sourcepp)
 
 target_include_directories(${PROJECT_NAME}_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 

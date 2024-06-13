@@ -56,7 +56,6 @@ list(APPEND ${PROJECT_NAME}_SOURCES
         "${CMAKE_CURRENT_LIST_DIR}/core/Window.h"
 
         "${CMAKE_CURRENT_LIST_DIR}/editor/Octree.h"
-        "${CMAKE_CURRENT_LIST_DIR}/editor/Vector.h"
         "${CMAKE_CURRENT_LIST_DIR}/editor/World.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/editor/World.h")
 
