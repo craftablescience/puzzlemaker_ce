@@ -9,7 +9,7 @@ on:
 
 env:
   BUILD_DIR: ${{github.workspace}}/build
-  QT_VERSION: '6.6.1'
+  QT_VERSION: '6.6.3'
   QT_MODULES: 'qtimageformats'
 
 jobs:
@@ -17,13 +17,14 @@ jobs:
     strategy:
       matrix:
         build_type: [Debug, Release]
+        compiler: [msvc]
     runs-on: windows-latest
     defaults:
       run:
         shell: cmd
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -41,21 +42,21 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2019_64'
-          dir: ${{github.workspace}}/qt
+          dir: '${{github.workspace}}/qt'
           modules: ${{env.QT_MODULES}}
           cache: true
 
       - name: Configure CMake
-        run: cmake -G "Ninja" -B "${{env.BUILD_DIR}}" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DQT_BASEDIR="${{github.workspace}}/qt/Qt/${{env.QT_VERSION}}/msvc2019_64"
+        run: cmake -G "Ninja" -B "${{env.BUILD_DIR}}" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DQT_BASEDIR="${{github.workspace}}/qt/Qt/${{env.QT_VERSION}}/msvc2019_64" -DPUZZLEMAKER_CE_USE_LTO=ON
 
       - name: Build
         working-directory: ${{env.BUILD_DIR}}
         run: cmake --build . --config ${{matrix.build_type}} -t puzzlemaker_ce -- -j%NUMBER_OF_PROCESSORS%
 
       - name: Upload Standalone
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Puzzlemaker_CE-Windows-Standalone-msvc-${{matrix.build_type}}
+          name: Puzzlemaker_CE-Windows-Standalone-${{matrix.compiler}}-${{matrix.build_type}}
           path: |
             ${{env.BUILD_DIR}}/CREDITS.md
             ${{env.BUILD_DIR}}/LICENSE
@@ -64,31 +65,17 @@ jobs:
             ${{env.BUILD_DIR}}/imageformats/*.dll
             ${{env.BUILD_DIR}}/platforms/*.dll
             ${{env.BUILD_DIR}}/styles/*.dll
-            ${{env.BUILD_DIR}}/tls/*.dll
           retention-days: 7
-
-      - name: Create Installer
-        working-directory: ${{env.BUILD_DIR}}
-        run: cpack
-
-      - name: Upload Installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: Puzzlemaker_CE-Windows-Installer-msvc-${{matrix.build_type}}
-          path: |
-            ${{env.BUILD_DIR}}/Puzzlemaker CE-*-win64.exe
-          retention-days: 7
-
 
   build-linux:
     strategy:
       matrix:
         build_type: [Debug, Release]
-        compiler: [gcc, clang]
+        compiler: [gcc]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -96,17 +83,9 @@ jobs:
         run: sudo apt update && sudo apt install -y cmake build-essential ninja-build chrpath
 
       - name: Install GCC
-        if: ${{ matrix.compiler == 'gcc' }}
         uses: egor-tensin/setup-gcc@v1
         with:
           version: 11
-          platform: x64
-
-      - name: Install Clang
-        if: ${{ matrix.compiler == 'clang' }}
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: 15
           platform: x64
       
       - name: Install Qt
@@ -117,12 +96,12 @@ jobs:
           host: 'linux'
           target: 'desktop'
           arch: 'gcc_64'
-          dir: ${{github.workspace}}/qt
+          dir: '${{github.workspace}}/qt'
           modules: ${{env.QT_MODULES}}
           cache: true
 
       - name: Configure CMake
-        run: cmake -G "Ninja" -B "${{env.BUILD_DIR}}" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DQT_BASEDIR="${{github.workspace}}/qt/Qt/${{env.QT_VERSION}}/gcc_64"
+        run: cmake -G "Ninja" -B "${{env.BUILD_DIR}}" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DQT_BASEDIR="${{github.workspace}}/qt/Qt/${{env.QT_VERSION}}/gcc_64" -DPUZZLEMAKER_CE_USE_LTO=ON
 
       - name: Build
         working-directory: ${{env.BUILD_DIR}}
@@ -143,7 +122,7 @@ jobs:
           done
 
       - name: Upload Standalone
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Puzzlemaker_CE-Linux-Standalone-${{matrix.compiler}}-${{matrix.build_type}}
           path: |
@@ -156,21 +135,8 @@ jobs:
             ${{env.BUILD_DIR}}/platforminputcontexts/*.so*
             ${{env.BUILD_DIR}}/platforms/*.so*
             ${{env.BUILD_DIR}}/platformthemes/*.so*
-            ${{env.BUILD_DIR}}/tls/*.so*
             ${{env.BUILD_DIR}}/wayland-decoration-client/*.so*
             ${{env.BUILD_DIR}}/wayland-graphics-integration-client/*.so*
             ${{env.BUILD_DIR}}/wayland-shell-integration/*.so*
             ${{env.BUILD_DIR}}/xcbglintegrations/*.so*
-          retention-days: 7
-
-      - name: Create Installer
-        working-directory: ${{env.BUILD_DIR}}
-        run: cpack
-
-      - name: Upload Installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: Puzzlemaker_CE-Linux-Installer-${{matrix.compiler}}-${{matrix.build_type}}
-          path: |
-            ${{env.BUILD_DIR}}/Puzzlemaker CE-*-Linux.deb
           retention-days: 7
