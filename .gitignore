@@ -4,8 +4,9 @@
 .vscode/
 
 # Project exclude paths
+build/
 cmake-build-*/
+out/
 
 # Generated
-installer/deb/puzzlemaker_ce.desktop
 src/config/Config.h

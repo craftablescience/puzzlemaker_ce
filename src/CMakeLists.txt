@@ -36,24 +36,29 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 
+# Configure header
+configure_file(
+        "${CMAKE_CURRENT_LIST_DIR}/config/Config.h.in"
+        "${CMAKE_CURRENT_LIST_DIR}/config/Config.h")
+
 # Add sources and create executable
 list(APPEND ${PROJECT_NAME}_SOURCES
         "$<$<CONFIG:Debug>:${CMAKE_CURRENT_LIST_DIR}/../res/logo_alt.qrc>"
         "$<$<NOT:$<CONFIG:Debug>>:${CMAKE_CURRENT_LIST_DIR}/../res/logo.qrc>"
         "${CMAKE_CURRENT_LIST_DIR}/../res/res.qrc"
 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Config.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Options.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/config/Options.h"
+        "${CMAKE_CURRENT_LIST_DIR}/config/Config.h"
+        "${CMAKE_CURRENT_LIST_DIR}/config/Options.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/config/Options.h"
 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/core/Main.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/core/Window.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/core/Window.h"
+        "${CMAKE_CURRENT_LIST_DIR}/core/Main.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/core/Window.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/core/Window.h"
 
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/Octree.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/Vector.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/World.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/editor/World.h")
+        "${CMAKE_CURRENT_LIST_DIR}/editor/Octree.h"
+        "${CMAKE_CURRENT_LIST_DIR}/editor/Vector.h"
+        "${CMAKE_CURRENT_LIST_DIR}/editor/World.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/editor/World.h")
 
 add_executable(${PROJECT_NAME} WIN32 ${${PROJECT_NAME}_SOURCES})
 
